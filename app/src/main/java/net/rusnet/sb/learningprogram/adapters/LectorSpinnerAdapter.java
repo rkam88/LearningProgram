@@ -1,4 +1,4 @@
-package net.rusnet.sb.learningprogram;
+package net.rusnet.sb.learningprogram.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LectorSpinnerAdapter extends BaseAdapter {
@@ -15,8 +16,8 @@ public class LectorSpinnerAdapter extends BaseAdapter {
     //
     private List<String> mLector;
 
-    public LectorSpinnerAdapter(@NonNull List<String> mLector) {
-        this.mLector = mLector;
+    public LectorSpinnerAdapter(@NonNull List<String> lector) {
+        this.mLector = new ArrayList<>(lector);
     }
 
     @Override

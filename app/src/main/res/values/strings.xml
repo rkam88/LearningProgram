@@ -5,5 +5,6 @@
     <string name="hide_weeks">Без групировки по неделям</string>
     <string name="show_weeks">C группировкой по неделям</string>
 
-    <string name="week">Неделя </string>
+    <string name="week">Неделя %d</string>
+
 </resources>

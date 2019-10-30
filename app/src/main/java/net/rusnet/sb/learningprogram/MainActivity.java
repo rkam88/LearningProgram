@@ -1,28 +1,25 @@
 package net.rusnet.sb.learningprogram;
 
+import android.content.res.Resources;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.database.DataSetObserver;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
-
+import net.rusnet.sb.learningprogram.adapters.LearningProgramAdapter;
+import net.rusnet.sb.learningprogram.adapters.LectorSpinnerAdapter;
+import net.rusnet.sb.learningprogram.dataprovider.LearningProgramProvider;
 import net.rusnet.sb.learningprogram.models.Lecture;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,11 +33,14 @@ public class MainActivity extends AppCompatActivity {
     private boolean filterByLector;
     private String lectorName;
 
+    private Resources mResources;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mResources = getResources();
 
         initSpinner();
 
@@ -61,10 +61,10 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager); //можно задать и в .xml
         adapter = new LearningProgramAdapter();
 
-        adapter.setLectures(mLearningProgramProvider.provideLectures(), showWeeks);
+        adapter.setLectures(mResources, mLearningProgramProvider.provideLectures(), showWeeks);
         recyclerView.setAdapter(adapter);
 
-        DividerItemDecoration divider = new DividerItemDecoration(this,DividerItemDecoration.VERTICAL);
+        DividerItemDecoration divider = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(divider);
     }
 
@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
                     filteredLectures = mLearningProgramProvider.filterBy(lectorName);
                     filterByLector = true;
                 }
-                adapter.setLectures(filteredLectures, showWeeks);
+                adapter.setLectures(mResources, filteredLectures, showWeeks);
                 adapter.notifyDataSetChanged();
             }
 
@@ -102,11 +102,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         int spinnerPosition = spinner.getSelectedItemPosition();
-        if (spinnerPosition == POSITION_ALL) {
-            filterByLector = false;
-        } else {
-            filterByLector = true;
-        }
+        filterByLector = spinnerPosition != POSITION_ALL;
 
     }
 
@@ -135,10 +131,10 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 if (!filterByLector) {
-                    adapter.setLectures(mLearningProgramProvider.provideLectures(), showWeeks);
+                    adapter.setLectures(mResources, mLearningProgramProvider.provideLectures(), showWeeks);
                     adapter.notifyDataSetChanged();
                 } else {
-                    adapter.setLectures(mLearningProgramProvider.filterBy(lectorName), showWeeks);
+                    adapter.setLectures(mResources, mLearningProgramProvider.filterBy(lectorName), showWeeks);
                     adapter.notifyDataSetChanged();
                 }
 

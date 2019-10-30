@@ -2,13 +2,12 @@ package net.rusnet.sb.learningprogram.models;
 
 import net.rusnet.sb.learningprogram.ListItemType;
 
-public class Week implements ListItem{
+public class Week implements ListItem {
 
-    public static final String WEEK = "Неделя ";
     private String mWeek;
 
-    public Week(int mWeek) {
-        this.mWeek = (WEEK + mWeek);
+    public Week(String weekText, int weekNumber) {
+        this.mWeek = String.format(weekText, weekNumber);
     }
 
     @Override

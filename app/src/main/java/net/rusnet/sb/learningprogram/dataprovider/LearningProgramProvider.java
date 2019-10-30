@@ -1,4 +1,4 @@
-package net.rusnet.sb.learningprogram;
+package net.rusnet.sb.learningprogram.dataprovider;
 
 import net.rusnet.sb.learningprogram.models.Lecture;
 
@@ -11,14 +11,14 @@ import java.util.Set;
 public class LearningProgramProvider {
 
     private List<Lecture> mLectures = Arrays.asList(
-            new Lecture("1", "24.09.2019", "Вводное занятие","Соколов"),
-            new Lecture("2", "26.09.2019", "View, Layouts","Соколов"),
-            new Lecture("3", "28.09.2019", "Drawables","Соколов"),
-            new Lecture("4", "01.10.2019", "Activity","Сафарян"),
-            new Lecture("5", "03.10.2019", "Адаптеры","Чумак"),
-            new Lecture("6", "05.10.2019", "UI: практика","Кудрявцев"),
-            new Lecture("7", "08.10.2019", "Custom View","Кудрявцев"),
-            new Lecture("8", "10.10.2019", "Touch events","Бильчук"),
+            new Lecture("1", "24.09.2019", "Вводное занятие", "Соколов"),
+            new Lecture("2", "26.09.2019", "View, Layouts", "Соколов"),
+            new Lecture("3", "28.09.2019", "Drawables", "Соколов"),
+            new Lecture("4", "01.10.2019", "Activity", "Сафарян"),
+            new Lecture("5", "03.10.2019", "Адаптеры", "Чумак"),
+            new Lecture("6", "05.10.2019", "UI: практика", "Кудрявцев"),
+            new Lecture("7", "08.10.2019", "Custom View", "Кудрявцев"),
+            new Lecture("8", "10.10.2019", "Touch events", "Бильчук"),
             new Lecture("9", "2.10.2019", "Сложные жесты", "Соколов"),
             new Lecture("10", "15.10.2019", "Layout & Measurement", "Кудрявцев"),
             new Lecture("11", "17.10.2019", "Custom ViewGroup", "Кудрявцев"),
@@ -44,15 +44,15 @@ public class LearningProgramProvider {
             new Lecture("31", "05.12.2019", "UI-тесты", "Сафарян"),
             new Lecture("32", "07.12.2019", "Финал", "Соколов")
 
-            );
+    );
 
     public List<Lecture> provideLectures() {
-        return mLectures;
+        return new ArrayList<>(mLectures);
     }
 
     public List<String> provideLectors() {
         Set<String> lectorSet = new HashSet<>();
-        for (Lecture lecture:mLectures) {
+        for (Lecture lecture : mLectures) {
             lectorSet.add(lecture.getLector());
 
         }
@@ -61,7 +61,7 @@ public class LearningProgramProvider {
 
     public List<Lecture> filterBy(String lectorName) {
         List<Lecture> result = new ArrayList<>();
-        for (Lecture lecture: mLectures) {
+        for (Lecture lecture : mLectures) {
             if (lecture.getLector().equals(lectorName)) {
                 result.add(lecture);
             }
