@@ -8,6 +8,7 @@
     <string name="week">Неделя %d</string>
 
     <string name="loading_data_failed">Не удалось загрузить данные!</string>
+    <string name="lecture_subtopics">Темы лекции:</string>
 
 
 </resources>

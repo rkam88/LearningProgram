@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import net.rusnet.sb.learningprogram.ListItemType;
 import net.rusnet.sb.learningprogram.R;
+import net.rusnet.sb.learningprogram.fragments.LectureListFragment;
 import net.rusnet.sb.learningprogram.models.Lecture;
 import net.rusnet.sb.learningprogram.models.ListItem;
 import net.rusnet.sb.learningprogram.models.Week;
@@ -27,6 +28,12 @@ public class LearningProgramAdapter
 
     private List<Lecture> mLectures;
     private List<ListItem> mListItems;
+
+    private LectureListFragment.OnLectureSelectedListener mListener;
+
+    public void setListener(LectureListFragment.OnLectureSelectedListener listener) {
+        mListener = listener;
+    }
 
     public void setLectures(Resources resources, List<Lecture> lectures, Boolean showWeeks) {
         mLectures = (lectures == null ? null : new ArrayList<>(lectures));
@@ -102,7 +109,7 @@ public class LearningProgramAdapter
 
     }
 
-    static class LectureHolder extends RecyclerView.ViewHolder {
+    class LectureHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final TextView mNumber;
         private final TextView mDate;
         private final TextView mTheme;
@@ -114,6 +121,17 @@ public class LearningProgramAdapter
             mDate = itemView.findViewById(R.id.date);
             mTheme = itemView.findViewById(R.id.theme);
             mLector = itemView.findViewById(R.id.lector);
+
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            int position = getAdapterPosition();
+            if (mListItems.get(position).getType().equals(ListItemType.LECTURE)) {
+                Lecture lecture = (Lecture) mListItems.get(position);
+                mListener.onLectureSelected(lecture);
+            }
         }
     }
 

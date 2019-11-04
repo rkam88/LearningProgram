@@ -3,4 +3,6 @@
     <dimen name="default_margin">20dp</dimen>
     <dimen name="week_padding">10dp</dimen>
     <dimen name="text_size_big">20sp</dimen>
+    <dimen name="top_padding">8dp</dimen>
+    <dimen name="subtopic_text_size">16sp</dimen>
 </resources>

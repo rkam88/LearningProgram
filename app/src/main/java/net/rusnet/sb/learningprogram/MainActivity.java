@@ -4,8 +4,13 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class MainActivity extends AppCompatActivity {
+import net.rusnet.sb.learningprogram.fragments.LectureDetailFragment;
+import net.rusnet.sb.learningprogram.fragments.LectureListFragment;
+import net.rusnet.sb.learningprogram.models.Lecture;
 
+public class MainActivity extends AppCompatActivity implements LectureListFragment.OnLectureSelectedListener {
+
+    public static final String TAG = "TAG";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -14,10 +19,17 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_placeholder, LectureListFragment.newInstance())
+                .add(R.id.fragment_placeholder, LectureListFragment.newInstance())
                 .commit();
 
     }
 
-
+    @Override
+    public void onLectureSelected(Lecture lecture) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_placeholder, LectureDetailFragment.newInstance(lecture))
+                .addToBackStack(null)
+                .commit();
+    }
 }

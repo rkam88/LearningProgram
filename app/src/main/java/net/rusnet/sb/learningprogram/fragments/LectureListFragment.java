@@ -1,5 +1,6 @@
-package net.rusnet.sb.learningprogram;
+package net.rusnet.sb.learningprogram.fragments;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import net.rusnet.sb.learningprogram.R;
 import net.rusnet.sb.learningprogram.adapters.LearningProgramAdapter;
 import net.rusnet.sb.learningprogram.adapters.LectorSpinnerAdapter;
 import net.rusnet.sb.learningprogram.dataprovider.LearningProgramProvider;
@@ -44,6 +46,23 @@ public class LectureListFragment extends Fragment {
     private String mLectorName;
 
     private Resources mResources;
+
+    private OnLectureSelectedListener mListener;
+
+    public interface OnLectureSelectedListener {
+        public void onLectureSelected(Lecture lecture);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnLectureSelectedListener) {
+            mListener = (OnLectureSelectedListener) context;
+        } else {
+            throw new ClassCastException(context.toString()
+                    + " must implement LectureListFragment.OnLectureSelectedListener");
+        }
+    }
 
     public static Fragment newInstance() {
         return new LectureListFragment();
@@ -77,6 +96,7 @@ public class LectureListFragment extends Fragment {
         );
         mRecyclerView.setLayoutManager(mLinearLayoutManager); //можно задать и в .xml
         mAdapter = new LearningProgramAdapter();
+        mAdapter.setListener(mListener);
 
         mRecyclerView.setAdapter(mAdapter);
 
