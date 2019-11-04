@@ -9,6 +9,7 @@ public class Lecture implements ListItem {
     private final String date;
     private final String theme;
     private final String lector;
+    private final String[] subtopics;
 
     @Override
     public ListItemType getType() {
@@ -18,11 +19,13 @@ public class Lecture implements ListItem {
     public Lecture(@NonNull String number,
                    @NonNull String date,
                    @NonNull String theme,
-                   @NonNull String lector) {
+                   @NonNull String lector,
+                   @NonNull String[] subtopics) {
         this.number = number;
         this.date = date;
         this.theme = theme;
         this.lector = lector;
+        this.subtopics = subtopics;
     }
 
 
@@ -42,4 +45,7 @@ public class Lecture implements ListItem {
         return lector;
     }
 
+    public String[] getSubtopics() {
+        return subtopics;
+    }
 }

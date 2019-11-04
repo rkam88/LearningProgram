@@ -1,11 +1,13 @@
 package net.rusnet.sb.learningprogram;
 
 import android.content.res.Resources;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -17,6 +19,7 @@ import net.rusnet.sb.learningprogram.adapters.LectorSpinnerAdapter;
 import net.rusnet.sb.learningprogram.dataprovider.LearningProgramProvider;
 import net.rusnet.sb.learningprogram.models.Lecture;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,14 +43,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mResources = getResources();
-
-        initSpinner();
-
-        initWeekSelectionSpinner();
-
         initRecyclerView();
 
+        mResources = getResources();
+
+        new LoadLecturesFromWebTask(this).execute();
 
     }
 
@@ -61,11 +61,14 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager); //можно задать и в .xml
         adapter = new LearningProgramAdapter();
 
-        adapter.setLectures(mResources, mLearningProgramProvider.provideLectures(), showWeeks);
         recyclerView.setAdapter(adapter);
 
         DividerItemDecoration divider = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(divider);
+    }
+
+    private void updateAdapter() {
+        adapter.setLectures(mResources, mLearningProgramProvider.provideLectures(), showWeeks);
     }
 
     private void initSpinner() {
@@ -153,5 +156,32 @@ public class MainActivity extends AppCompatActivity {
             showWeeks = true;
         }
 
+    }
+
+    private static class LoadLecturesFromWebTask extends AsyncTask<Void, Void, List<Lecture>> {
+        private final WeakReference<MainActivity> mActivityRef;
+        private final LearningProgramProvider mProvider;
+
+        private LoadLecturesFromWebTask(MainActivity activity) {
+            mActivityRef = new WeakReference<>(activity);
+            mProvider = activity.mLearningProgramProvider;
+        }
+
+        @Override
+        protected List<Lecture> doInBackground(Void... voids) {
+            return mProvider.downloadLectures();
+        }
+
+        @Override
+        protected void onPostExecute(List<Lecture> lectures) {
+            MainActivity activity = mActivityRef.get();
+            if (lectures == null) {
+                Toast.makeText(activity, R.string.loading_data_failed, Toast.LENGTH_SHORT).show();
+            } else {
+                activity.initSpinner();
+                activity.initWeekSelectionSpinner();
+                activity.updateAdapter();
+            }
+        }
     }
 }
