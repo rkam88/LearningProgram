@@ -17,10 +17,12 @@ public class MainActivity extends AppCompatActivity implements LectureListFragme
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.fragment_placeholder, LectureListFragment.newInstance())
-                .commit();
+        if (savedInstanceState == null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.fragment_placeholder, LectureListFragment.newInstance())
+                    .commit();
+        }
 
     }
 
