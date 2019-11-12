@@ -33,10 +33,12 @@ import java.util.List;
 public class LectureListFragment extends Fragment {
 
     private static final int POSITION_ALL = 0;
+    private static final String EXTRA_WEEK_SPINNER_POSITION = "WEEK";
+    private static final String EXTRA_LECTORS_SPINNER_POSITION = "LECTORS";
 
     private RecyclerView mRecyclerView;
     private Spinner mWeekSpinner;
-    private Spinner mSpinner;
+    private Spinner mLectorsSpinner;
     private LinearLayoutManager mLinearLayoutManager;
     private LearningProgramProvider mLearningProgramProvider = new LearningProgramProvider();
     private LearningProgramAdapter mAdapter;
@@ -48,6 +50,10 @@ public class LectureListFragment extends Fragment {
     private Resources mResources;
 
     private OnLectureSelectedListener mListener;
+
+    private boolean restoreSpinners = false;
+    private int weekSpinnerPosition;
+    private int lectorsSpinnerPosition;
 
     public interface OnLectureSelectedListener {
         public void onLectureSelected(Lecture lecture);
@@ -68,6 +74,17 @@ public class LectureListFragment extends Fragment {
         return new LectureListFragment();
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putInt(
+                EXTRA_WEEK_SPINNER_POSITION,
+                mWeekSpinner.getSelectedItemPosition());
+        outState.putInt(
+                EXTRA_LECTORS_SPINNER_POSITION,
+                mLectorsSpinner.getSelectedItemPosition());
+        super.onSaveInstanceState(outState);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -78,8 +95,14 @@ public class LectureListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        if (savedInstanceState != null) {
+            weekSpinnerPosition = savedInstanceState.getInt(EXTRA_WEEK_SPINNER_POSITION);
+            lectorsSpinnerPosition = savedInstanceState.getInt(EXTRA_LECTORS_SPINNER_POSITION);
+            restoreSpinners = true;
+        }
+
         mWeekSpinner = view.findViewById(R.id.week_selection_spinner);
-        mSpinner = view.findViewById(R.id.lectors_spinner);
+        mLectorsSpinner = view.findViewById(R.id.lectors_spinner);
         mRecyclerView = view.findViewById(R.id.learning_program_recycler);
 
         initRecyclerView();
@@ -108,7 +131,7 @@ public class LectureListFragment extends Fragment {
         mAdapter.setLectures(mResources, mLearningProgramProvider.provideLectures(), mShowWeeks);
     }
 
-    private void initSpinner() {
+    private void initLectorsSpinner() {
 
         List<String> lectors = mLearningProgramProvider.provideLectors();
         Collections.sort(lectors);
@@ -116,9 +139,10 @@ public class LectureListFragment extends Fragment {
 
 
         final LectorSpinnerAdapter spinnerAdapter = new LectorSpinnerAdapter(lectors);
-        mSpinner.setAdapter(spinnerAdapter);
+        mLectorsSpinner.setAdapter(spinnerAdapter);
+        if (restoreSpinners) mLectorsSpinner.setSelection(lectorsSpinnerPosition);
 
-        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mLectorsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mLectorName = "";
@@ -141,7 +165,7 @@ public class LectureListFragment extends Fragment {
             }
         });
 
-        int spinnerPosition = mSpinner.getSelectedItemPosition();
+        int spinnerPosition = mLectorsSpinner.getSelectedItemPosition();
         mFilterByLector = spinnerPosition != POSITION_ALL;
 
     }
@@ -158,6 +182,7 @@ public class LectureListFragment extends Fragment {
                 weekSelectionSpinnerItems);
 
         mWeekSpinner.setAdapter(weekAdapter);
+        if (restoreSpinners) mWeekSpinner.setSelection(weekSpinnerPosition);
 
         mWeekSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -215,7 +240,7 @@ public class LectureListFragment extends Fragment {
             if (lectures == null) {
                 Toast.makeText(fragment.getContext(), R.string.loading_data_failed, Toast.LENGTH_SHORT).show();
             } else {
-                fragment.initSpinner();
+                fragment.initLectorsSpinner();
                 fragment.initWeekSelectionSpinner();
                 fragment.updateAdapter();
             }
